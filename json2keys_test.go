@@ -141,7 +141,7 @@ func Test_json2Keys_Parse(t *testing.T) {
 					"tags": [
 					  "laborum",
 					  "enim",
-					  "consequat"					  
+					  "consequat"
 					]}`,
 			},
 			wantKeys: map[string]interface{}{
@@ -192,6 +192,17 @@ func Test_json2Keys_Parse(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "Success whit nested objects",
+			j:    &json2Keys{},
+			args: args{
+				jsonStr: `{"data":{"parameter": "second"}}`,
+			},
+			wantKeys: map[string]interface{}{
+				"data.parameter": "second",
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -201,6 +212,11 @@ func Test_json2Keys_Parse(t *testing.T) {
 				t.Errorf("json2Keys.Parse() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+
+			if len(gotKeys) == 0 && !tt.wantErr {
+				t.Errorf("json2Keys.Parse() got nothing")
+			}
+
 			for k, v := range gotKeys {
 				if tt.wantKeys[k] != v {
 					t.Errorf("json2Keys.Parse() got %v, want %v", v, tt.wantKeys[k])

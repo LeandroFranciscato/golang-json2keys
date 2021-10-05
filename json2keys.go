@@ -67,6 +67,8 @@ func (j *json2Keys) getSecretsFromMap(mapa map[string]interface{}, previousKey s
 			for k, v := range newMap {
 				if previousKey != "" {
 					secrets[previousKey+"."+k] = v
+				} else {
+					secrets[k] = v
 				}
 			}
 		} else if reflect.TypeOf(val) == reflect.TypeOf(make([]interface{}, 0)) {
